@@ -16,7 +16,7 @@ function SvgaPlayerBuilder(params: Params) {
 
 @Observed
 export class SvgaPlayerView extends PlatformView implements MethodCallHandler {
-    numValue: string = "test";
+    url: string = "";
 
     methodChannel: MethodChannel;
     index: number = 1;
@@ -32,12 +32,12 @@ export class SvgaPlayerView extends PlatformView implements MethodCallHandler {
     onMethodCall(call: MethodCall, result: MethodResult): void {
         // 接受Dart侧发来的消息
         let method: string = call.method;
-        let link1: SubscribedAbstractProperty<number> = AppStorage.link('numValue');
+        let link: SubscribedAbstractProperty<number> = AppStorage.link('url');
         switch (method) {
             case 'getMessageFromFlutterView':
                 let value: ESObject = call.args;
-                this.numValue = value;
-                link1.set(value)
+                this.url = value;
+                link.set(value)
                 result.success(true);
                 break;
         }

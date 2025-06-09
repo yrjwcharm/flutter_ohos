@@ -19,7 +19,7 @@ export struct SvgaPlayerComponent {
   build() {
     // 声明式UI 2.0版本组件
     SvgaPlayerV2({
-      url:'',
+      url:this.storageLink,
       controller: this.controller
     })
       .width(300)
