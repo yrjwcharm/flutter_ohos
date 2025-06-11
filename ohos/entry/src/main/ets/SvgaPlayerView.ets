@@ -16,14 +16,13 @@ function SvgaPlayerBuilder(params: Params) {
 
 @Observed
 export class SvgaPlayerView extends PlatformView implements MethodCallHandler {
-    url: string = "";
 
     methodChannel: MethodChannel;
     index: number = 1;
 
     constructor(context: common.Context, viewId: number, args: ESObject, message: BinaryMessenger) {
         super();
-        console.log("nodeController viewId:" + viewId)
+        console.log("nodeController viewId:"+viewId)
         // 注册消息通道，消息通道根据具体需求添加，代码仅作为示例
         this.methodChannel = new MethodChannel(message, `com.rex.custom.ohos/customView${viewId}`, StandardMethodCodec.INSTANCE);
         this.methodChannel.setMethodCallHandler(this);
@@ -36,7 +35,6 @@ export class SvgaPlayerView extends PlatformView implements MethodCallHandler {
         switch (method) {
             case 'getMessageFromFlutterView':
                 let value: ESObject = call.args;
-                this.url = value;
                 link.set(value)
                 result.success(true);
                 break;

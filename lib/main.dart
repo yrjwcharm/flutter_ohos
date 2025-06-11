@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:my_app/CustomOhosView.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,12 +33,61 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
+  String receivedData = '';
+  CustomViewController? _controller;
+  void _onCustomOhosViewCreated(CustomViewController controller) {
+    _controller = controller;
+    _controller?.customDataStream.listen((data) {
+      //接收到来自OHOS端的数据
+      setState(() {
+        receivedData = '来自ohos的数据：$data';
+      });
     });
+  }
+
+  Widget _buildOhosView() {
+    return SizedBox(
+      width: 100,
+      height: 100,
+      child: CustomOhosView(_onCustomOhosViewCreated),
+    );
+  }
+
+  Widget _buildFlutterView() {
+    return Expanded(
+      flex: 1,
+      child: Stack(
+        alignment: AlignmentDirectional.bottomCenter,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              TextButton(
+                onPressed: () {
+                  final randomNum = Random().nextInt(10);
+                  _controller?.sendMessageToOhosView(
+                      'https://raw.githubusercontent.com/yyued/SVGAPlayer-iOS/master/SVGAPlayer/Samples/Goddess.svga');
+                },
+                child: const Text('发送数据给ohos'),
+              ),
+              const SizedBox(height: 10),
+              Text(receivedData),
+            ],
+          ),
+          const Padding(
+            padding: EdgeInsets.only(bottom: 15),
+            child: Text(
+              'Flutter - View',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -45,25 +97,13 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ElevatedButton(
-                onPressed: () {
-                  print('Button Pressed');
-                },
-                child: const Text('Click Me')),
-            const FractionallySizedBox(
-              widthFactor: 0.5,
-              child: Text(
-                'You have pushed the button this many times:',
-                style: TextStyle(fontSize: 20),
-              ),
-            ),
-          ],
-        ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          _buildOhosView(),
+          _buildFlutterView(),
+        ],
+      ),
     );
   }
 }

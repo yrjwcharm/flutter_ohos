@@ -10,19 +10,18 @@ export struct SvgaPlayerComponent {
     autoRelease: true,           // 页面销毁时自动释放资源
     clearsAfterStop: true        // 停止播放后清理资源
   });
-  @Prop params: Params;
+  @Prop  params: Params;
   private svgaPlayerView: SvgaPlayerView = this.params.platformView as SvgaPlayerView
-  @StorageLink('url') storageLink: string = ""
+  @StorageLink('url') @Watch('__watchUrlChange')  storageLink: string = ""
   @State bkColor: Color = Color.Red
-
-
+  __watchUrlChange(){
+    this.controller.load('https://raw.githubusercontent.com/yyued/SVGAPlayer-iOS/master/SVGAPlayer/Samples/Goddess.svga');
+  }
   build() {
     // 声明式UI 2.0版本组件
     SvgaPlayerV2({
       url:this.storageLink,
       controller: this.controller
     })
-      .width(300)
-      .height(150)
   }
 }
